@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with MATLAB Actions
 
-name: MATLAB Build
+name: outputCache Bash
 
 # Controls when the action will run. 
 on:
@@ -27,12 +27,23 @@ jobs:
         with:
             build-options: -outputCache
             cache: true
-
+      
+      # The "clean" task deletes outputs and traces of the other tasks in the plan, but it does not operate on cached outputs.
       - name: Run build
         uses: matlab-actions/run-build@v3
         with:
             tasks: clean
 
+      # Run a new build using the output cache. 
+      # The build tool does not run the "test" task to regenerate its deleted outputs.
+      # Instead, it skips the task and loads the cached outputs.  
+      - name: Run build
+        uses: matlab-actions/run-build@v3
+        with:
+            build-options: -outputCache
+            cache: true
+
+      # Run another build. The build tool again skips the "test" task because the task is up to date.
       - name: Run build
         uses: matlab-actions/run-build@v3
         with:
